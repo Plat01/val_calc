@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Рассчитать стоимость</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0c0e12;
+    --surface: #14171d;
+    --surface-2: #1b1f27;
+    --line: #262b34;
+    --text: #e7eaef;
+    --muted: #8b93a1;
+    --accent: #6ea8fe;
+    --error: #e5736a;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: 72px 16px 96px;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 16px/1.55 "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; }
+
+  .head { margin-bottom: 44px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 600;
+    letter-spacing: -.02em;
+  }
+
+  .grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+  .calc {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: border-color .2s ease;
+  }
+  .calc:focus-within { border-color: #39414f; }
+
+  .calc__title {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -.01em;
+    margin-bottom: 26px;
+  }
+
+  .fields { display: grid; gap: 18px; grid-template-columns: 1fr; margin: 0; }
+  @media (min-width: 520px) { .fields { grid-template-columns: repeat(3, 1fr); } }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .field input {
+    width: 100%;
+    padding: 11px 13px;
+    font: 500 15px/1.2 "JetBrains Mono", ui-monospace, monospace;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .field input:hover { border-color: #333a45; }
+  .field input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #1e232c;
+  }
+  .calc-tip {
+    display: block;
+    margin-top: 7px;
+    font-size: 12px;
+    color: var(--error);
+  }
+
+  .calc__summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+  }
+  .calc__label { font-size: 14px; color: var(--muted); }
+  .calc__result {
+    font: 500 24px/1.2 "JetBrains Mono", ui-monospace, monospace;
+    letter-spacing: -.02em;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .calc__result span { color: var(--muted); font-size: 15px; margin-left: 4px; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="head">
+    <h1>Рассчитать стоимость</h1>
+  </header>
+
+  <div class="grid">
+
+    <section class="calc" data-calc="mold">
+      <div class="calc__title">Мастер-модели для вакуумно-формовочных станков</div>
+      <form class="fields" onsubmit="return false">
+        <div class="field">
+          <label for="mold-length">Длина, мм</label>
+          <input id="mold-length" name="length" type="number" value="300" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="mold-width">Ширина, мм</label>
+          <input id="mold-width" name="width" type="number" value="300" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="mold-height">Высота, мм</label>
+          <input id="mold-height" name="height" type="number" value="30" inputmode="decimal" />
+        </div>
+      </form>
+      <div class="calc__summary">
+        <span class="calc__label">Ориентировочная цена</span>
+        <span class="calc__result"></span>
+      </div>
+    </section>
+
+    <section class="calc" data-calc="abs">
+      <div class="calc__title">Лист АБС-пластика</div>
+      <form class="fields" onsubmit="return false">
+        <div class="field">
+          <label for="abs-length">Длина, мм</label>
+          <input id="abs-length" name="length" type="number" value="1500" min="1" max="10000" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="abs-width">Ширина, мм</label>
+          <input id="abs-width" name="width" type="number" value="1000" min="1" max="1300" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="abs-height">Толщина, мм</label>
+          <input id="abs-height" name="height" type="number" value="4" min="1.5" max="4" step="0.1" inputmode="decimal" />
+        </div>
+      </form>
+      <div class="calc__summary">
+        <span class="calc__label">Ориентировочная цена</span>
+        <span class="calc__result"></span>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+<script>
+(function () {
+  // Мастер-модель: площадь развёртки короба × цена за мм²
+  var MOLD_PRICE_PER_MM2 = 0.05;
+  // Лист АБС: объём в литрах × цена за литр, +5% на технологический запас
+  var ABS_PRICE_PER_LITRE = 450;
+  var ABS_WASTE_FACTOR = 1.05;
+
+  function clearTip(field) {
+    var tip = field.parentNode.querySelector('.calc-tip');
+    if (tip) tip.remove();
+  }
+
+  function showTip(field, text) {
+    clearTip(field);
+    var tip = document.createElement('span');
+    tip.className = 'calc-tip';
+    tip.textContent = text;
+    field.parentNode.appendChild(tip);
+    setTimeout(function () { clearTip(field); }, 3000);
+  }
+
+  // Значение поля, поджатое к его min/max, с подсказкой при выходе за границы
+  function clampValue(field) {
+    var value = parseFloat(field.value);
+    var min = parseFloat(field.min);
+    var max = parseFloat(field.max);
+
+    if (isNaN(value)) return 0;
+
+    if (!isNaN(min) && value < min) {
+      showTip(field, 'Минимальное значение: ' + field.min);
+      field.value = field.min;
+      return min;
+    }
+    if (!isNaN(max) && value > max) {
+      showTip(field, 'Максимальное значение: ' + field.max);
+      field.value = field.max;
+      return max;
+    }
+    return value;
+  }
+
+  var formulas = {
+    mold: function (length, width, height) {
+      var square = length * width + length * height * 2 + width * height * 2;
+      return square * MOLD_PRICE_PER_MM2;
+    },
+    abs: function (length, width, height) {
+      return (length / 1000) * (width / 1000) * height * ABS_WASTE_FACTOR * ABS_PRICE_PER_LITRE;
+    }
+  };
+
+  var money = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  function render(calc) {
+    var values = {};
+    calc.querySelectorAll('input[type=number]').forEach(function (input) {
+      values[input.name] = clampValue(input);
+    });
+
+    var price = formulas[calc.dataset.calc](values.length, values.width, values.height);
+    calc.querySelector('.calc__result').innerHTML =
+      money.format(price) + '<span>руб.</span>';
+  }
+
+  document.querySelectorAll('[data-calc]').forEach(function (calc) {
+    calc.querySelectorAll('input[type=number]').forEach(function (input) {
+      input.addEventListener('input', function () { render(calc); });
+      input.addEventListener('change', function () { render(calc); });
+    });
+    render(calc);
+  });
+})();
+</script>
+</body>
+</html>
